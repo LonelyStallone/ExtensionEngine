@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+ 
+option csharp_namespace = "ExtensionEngine.Plugin.InventoryManagement.Proto";
+
+package InventoryPlugin;
+  
+service InventoryPluginFacade {
+  rpc ProduceInventoryData (ProduceInventoryDataRequest) returns (ProduceInventoryDataResponse);
+}
+
+message ProduceInventoryDataRequest {
+  repeated InventoryData InventoryData = 1;
+}
+
+message ProduceInventoryDataResponse {
+}
+
+message InventoryData {
+	string key = 1;
+	string value = 2;
+}

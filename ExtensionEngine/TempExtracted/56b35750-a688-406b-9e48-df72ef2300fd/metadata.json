@@ -1,0 +1,9 @@
+{
+  "pluginName": "ExtensionEngine.Plugin.InventoryManagement.MacOs",
+  "version": "1.0.0",
+  "mainAssembly": "ExtensionEngine.Plugin.InventoryManagement.MacOs.dll",
+  "entryType": "ExtensionEngine.Plugin.InventoryManagement.MacOs.Plugin",
+  "created": "2025-10-18T21:14:03.5341268Z",
+  "assemblyCount": 10,
+  "resourceCount": 2
+}
