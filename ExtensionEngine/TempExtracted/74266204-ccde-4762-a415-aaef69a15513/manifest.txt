@@ -1,7 +1,0 @@
-Plugin: ExtensionEngine.Plugin.InventoryManagement.MacOs
-Version: 1.0.6
-Main Assembly: ExtensionEngine.Plugin.InventoryManagement.MacOs.dll
-Entry Type: ExtensionEngine.Plugin.InventoryManagement.MacOs.Plugin
-Created: 2025-10-18 20:58:01
-Assemblies: 10
-Resources: 2

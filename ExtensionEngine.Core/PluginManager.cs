@@ -74,19 +74,8 @@ public class PluginManager : IPluginManager
         // Загрузжаем недостающие плагины с бэка
         await LoadMissingPluginsAsync(pluginsMetadataToLoad, cancellationToken);
 
-        // Получаем список активных плагинов из трекера активных плагинов
-        var activePluginMetadatas = _runtimePluginTracker.GetActivePluginMetadata();
-        _logger.LogInformation("Active {Count} plugins", activePluginMetadatas.Count);
-
-        // Получаем список плагинов для обновления
-        var pluginMetadatasToUpdate = validPluginMetadatas
-            .Where(validPluginMetadata => !activePluginMetadatas.Any(activePluginMetadata => validPluginMetadata.IsEqualsMetadata(activePluginMetadata)))
-            .ToList();
-
-        _logger.LogInformation("Need activate {Count} plugins", pluginMetadatasToUpdate.Count);
-
         // Активируем плагины
-        await AddAndRunPluginsAsync(pluginMetadatasToUpdate, cancellationToken);
+        await AddOrUpdatePluginsAsync(validPluginMetadatas, cancellationToken);
     }
 
     private async Task LoadMissingPluginsAsync(IReadOnlyCollection<IPluginInfo> pluginsToLoad, CancellationToken cancellationToken)
@@ -102,25 +91,12 @@ public class PluginManager : IPluginManager
         }
     }
 
-    private async Task AddAndRunPluginsAsync(IReadOnlyCollection<IPluginInfo> pluginMetadatasToUpdate, CancellationToken cancellationToken)
+    private async Task AddOrUpdatePluginsAsync(IReadOnlyCollection<IPluginInfo> pluginMetadatasToUpdate, CancellationToken cancellationToken)
     {
         foreach (var pluginMetadata in pluginMetadatasToUpdate)
         {
-            var plugin = await GetPluginAsync(pluginMetadata, cancellationToken);
-
-            _logger.LogInformation("Runing plugin {Plugin} from local storage", plugin.GetDescription());
-            await _runtimePluginTracker.AddAndStartAsync(plugin, cancellationToken);
+            _logger.LogInformation("Runing plugin {Plugin} from local storage", pluginMetadata.GetDescription());
+            await _runtimePluginTracker.AddOrUpdateAsync(pluginMetadata, cancellationToken);
         }
-    }
-
-    private async Task<IPlugin> GetPluginAsync(IPluginInfo pluginMetadata, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Loading plugin container {Plugin} from local storage", pluginMetadata.GetDescription());
-        var pluginContainers = await _pluginContainerStorage.GetPluginContainerAsync(pluginMetadata, cancellationToken);
-
-        _logger.LogInformation("Convert container {Plugin} to .NET plugin", pluginMetadata.GetDescription());
-        var plugin = _pluginFactory.Create(pluginContainers);
-
-        return plugin;
     }
 }

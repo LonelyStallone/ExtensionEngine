@@ -51,30 +51,6 @@ public class PluginFactory : IPluginFactory
         }
     }
 
-    private IPlugin LoadPluginFromAssemblyOld(string assemblyPath)
-    {
-        if (!File.Exists(assemblyPath))
-            throw new FileNotFoundException($"Сборка не найдена: {assemblyPath}");
-
-        // Загружаем сборку напрямую
-        var assembly = Assembly.LoadFrom(assemblyPath);
-
-        // Ищем тип плагина
-        var pluginType = assembly.GetTypes()
-            .FirstOrDefault(t => typeof(IPlugin).IsAssignableFrom(t) &&
-                               !t.IsInterface && !t.IsAbstract);
-
-        if (pluginType == null)
-            throw new InvalidOperationException($"В сборке {assemblyPath} не найден тип, реализующий IPlugin");
-
-        // Создаем экземпляр плагина
-        var plugin = Activator.CreateInstance(pluginType) as IPlugin;
-        if (plugin == null)
-            throw new InvalidOperationException($"Тип {pluginType.Name} не может быть создан");
-
-        return plugin;
-    }
-
     private IPlugin LoadPluginFromAssembly(string assemblyPath)
     {
         var absolutPath = ToAbsolutePath(assemblyPath);

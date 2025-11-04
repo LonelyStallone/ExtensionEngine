@@ -1,104 +1,74 @@
 ﻿using ExtensionEngine.Core.Abstractions;
+using ExtensionEngine.Core.Plugins.Abstractions;
 using ExtensionEngine.Plugin.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
 public class RuntimePluginTracker : IRuntimePluginTracker
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IHostedPluginFactory _hostedPluginFactory;
     private readonly ILogger<RuntimePluginTracker> _logger;
 
-    private readonly ConcurrentDictionary<string, IPlugin> _activePlugins = new();
+    private readonly ConcurrentDictionary<string, IHostedPlugin> _activePlugins = new();
 
     public RuntimePluginTracker(
-        IServiceProvider serviceProvider,
+        IHostedPluginFactory hostedPluginFactory,
         ILogger<RuntimePluginTracker> logger)
     {
-        _serviceProvider = serviceProvider;
+        _hostedPluginFactory = hostedPluginFactory;
         _logger = logger;
     }
 
-    public async Task AddAndStartAsync(IPlugin plugin, CancellationToken cancellationToken)
+    public async Task AddOrUpdateAsync(IPluginInfo pluginInfo, CancellationToken cancellationToken)
     {
-        var pluginKey = plugin.Name;
+        var pluginKey = pluginInfo.Name;
 
         if (_activePlugins.TryGetValue(pluginKey, out var runningPlugin))
         {
-            // Плагин уже запущен - проверяем версию
-            if (runningPlugin.Version == plugin.Version)
-            {
-                _logger.LogInformation("Plugin {PluginName} v{Version} is already running", pluginKey, plugin.Version);
-                return;
-            }
+            runningPlugin.SetActualVersion(pluginInfo);
 
-            // Версия изменилась - останавливаем старую и запускаем новую
-            _logger.LogInformation("Plugin {PluginName} version changed from v{OldVersion} to v{NewVersion}, updating...",
-                pluginKey,
-                runningPlugin.Version,
-                plugin.Version);
-
-            await StopPluginSafeAsync(runningPlugin, cancellationToken);
-            _activePlugins.TryRemove(pluginKey, out _);
+            return;
         }
 
-        // Запускаем новый плагин
-        if (_activePlugins.TryAdd(pluginKey, plugin))
+        _logger.LogInformation("Creating new hosted plugin for {PluginName}", pluginKey);
+        var hostedPlugin = _hostedPluginFactory.Create(pluginInfo);
+
+        if (_activePlugins.TryAdd(pluginKey, hostedPlugin))
         {
-            plugin.StartAsync(_serviceProvider, cancellationToken);
-            _logger.LogInformation("Plugin {PluginName} v{Version} started successfully", pluginKey, plugin.Version);
-        }
-    }
+            await hostedPlugin.StartAsync(cancellationToken);
 
-    public IReadOnlyCollection<IPluginInfo> GetActivePluginMetadata()
-    {
-        return _activePlugins.Values.ToList().AsReadOnly();
+            _logger.LogInformation("Plugin {PluginName} v{Version} started successfully", pluginKey, hostedPlugin.Version);
+        }
+        else
+        {
+            _logger.LogWarning("Failed to add plugin {PluginName} to active plugins dictionary - it may have been added by another thread", pluginKey);
+        }
     }
 
     public async Task StopAndRemoveAsync(IPluginInfo pluginInfo, CancellationToken cancellationToken)
     {
         var pluginKey = pluginInfo.Name;
 
-        if (_activePlugins.TryRemove(pluginKey, out var plugin))
+        if (_activePlugins.TryRemove(pluginKey, out var hostedPlugin))
         {
             try
             {
-                _logger.LogInformation("Stopping plugin {PluginName} version {Version}", plugin.Name, plugin.Version);
-
-                await plugin.StopAsync(cancellationToken);
-
-                _logger.LogInformation("Plugin {PluginName} version {Version} stopped successfully", plugin.Name, plugin.Version);
+                await hostedPlugin.StopAsync(cancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to stop plugin {PluginName} version {Version}", plugin.Name, plugin.Version);
+                _logger.LogError(ex, "Failed to stop plugin {PluginName}", pluginKey);
                 throw;
             }
         }
         else
         {
-            _logger.LogWarning("Plugin {PluginName} version {Version} not found in active plugins", pluginInfo.Name, pluginInfo.Version);
+            _logger.LogWarning("Plugin {PluginName} not found in active plugins", pluginKey);
         }
     }
 
-    public bool TryGetVersion(string pluginName, Version version)
+    public IReadOnlyCollection<IPluginInfo> GetActivePluginInfo()
     {
-        if (string.IsNullOrEmpty(pluginName))
-            throw new ArgumentException("Plugin name cannot be null or empty", nameof(pluginName));
-
-        return _activePlugins.ContainsKey(pluginName);
-    }
-
-    private async Task StopPluginSafeAsync(IPlugin plugin, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await plugin.StopAsync(cancellationToken);
-
-            _logger.LogInformation("Plugin {PluginName} v{Version} stopped successfully", plugin.Name, plugin.Version);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to stop plugin {PluginName} v{Version}", plugin.Name, plugin.Version);
-        }
+        return _activePlugins.Values.ToList().AsReadOnly();
     }
 }

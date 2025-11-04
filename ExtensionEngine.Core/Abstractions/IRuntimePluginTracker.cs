@@ -4,11 +4,9 @@ namespace ExtensionEngine.Core.Abstractions;
 
 public interface IRuntimePluginTracker
 {
-    Task AddAndStartAsync(IPlugin plugin, CancellationToken cancellationToken);
+    Task AddOrUpdateAsync(IPluginInfo pluginInfo, CancellationToken cancellationToken);
 
-    Task StopAndRemoveAsync(IPluginInfo pluginMetadata, CancellationToken cancellationToken);
+    Task StopAndRemoveAsync(IPluginInfo pluginInfo, CancellationToken cancellationToken);
 
-    bool TryGetVersion(string pluginaName, Version version);
-
-    public IReadOnlyCollection<IPluginInfo> GetActivePluginMetadata();
+    public IReadOnlyCollection<IPluginInfo> GetActivePluginInfo();
 }
