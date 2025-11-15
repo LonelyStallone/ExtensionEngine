@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExtensionEngine.Core.Proto\ExtensionEngine.Core.Proto.csproj" />
-    <ProjectReference Include="..\ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Plugin.Abstractions.csproj" />
+    <ProjectReference Include="..\ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

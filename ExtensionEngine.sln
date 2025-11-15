@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionEngine", "Extensio
 		{F0D3861E-A2C5-4FDC-B5DC-7EA9B4EB4EB7} = {F0D3861E-A2C5-4FDC-B5DC-7EA9B4EB4EB7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionEngine.Plugin.Abstractions", "ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Plugin.Abstractions.csproj", "{F48E9CB5-8504-4E97-B520-DE544A7771E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionEngine.Abstractions", "ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Abstractions.csproj", "{F48E9CB5-8504-4E97-B520-DE544A7771E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionEngine.Core", "ExtensionEngine.Core\ExtensionEngine.Core.csproj", "{E8E860FE-6A81-4F20-A9D4-C408E994DC4D}"
 EndProject

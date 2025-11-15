@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+ 
+option csharp_namespace = "ExtensionEngine.Core.Proto";
+
+package ExtensionEngine;
+
+service MizarFacade {
+  rpc GetValidPluginVersions (ApiEnvelopeRequest) returns (GetValidPluginVersionsResponse);
+}
+ 
+message ApiEnvelopeRequest {
+  required string host_id = 1;
+  required PluginInfo plugin_info =2;
+  required string message_id = 3;
+  required google.protobuf.Timestamp  date_time = 4;
+  required string payload  = 5;
+}
+
+message PluginInfo {
+	string version = 1;
+	string name = 2;
+}

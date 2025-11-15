@@ -1,4 +1,4 @@
-﻿using ExtensionEngine.Plugin.Abstractions;
+﻿using ExtensionEngine.Abstractions.Plugin;
 using System.Reflection;
 
 namespace ExtensionEngine.Plugin.Delivery;

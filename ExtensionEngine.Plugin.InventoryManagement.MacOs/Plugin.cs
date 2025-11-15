@@ -1,4 +1,5 @@
-﻿using ExtensionEngine.Plugin.Abstractions;
+﻿using ExtensionEngine.Abstractions.Plugin;
+using ExtensionEngine.Plugin.Abstractions.Gateway;
 using ExtensionEngine.Plugin.InventoryManagement.Proto;
 using Grpc.Net.Client;
 using Microsoft.Extensions.DependencyInjection;

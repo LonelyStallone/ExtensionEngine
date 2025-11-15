@@ -1,4 +1,6 @@
-﻿namespace ExtensionEngine.Plugin.Abstractions.Extensions;
+﻿using ExtensionEngine.Abstractions.Plugin;
+
+namespace ExtensionEngine.Plugin.Abstractions.Extensions;
 
 public static class PluginInfoExtensions
 {
