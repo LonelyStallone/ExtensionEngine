@@ -59,7 +59,7 @@ public class PluginManager : IPluginManager
     private async Task UpdatePluginsAsync(CancellationToken cancellationToken)
     {
         // Получаем список валидных версий плагинов c бэка
-        var validPluginMetadatas = await _pluginRegistry.GetValidPluginVersions(cancellationToken);
+        var validPluginMetadatas = await _pluginLoader.GetValidPluginVersions(cancellationToken);
         _logger.LogInformation("Found {Count} valid plugins", validPluginMetadatas.Count);
 
         // Получаем текущие плагины из хранилища плагинов
@@ -83,7 +83,7 @@ public class PluginManager : IPluginManager
         {
             _logger.LogInformation("Loading {Count} new/updated plugins", pluginsToLoad.Count);
 
-            var loadedPluginContainers = await _pluginRegistry.LoadAsync(pluginsToLoad, cancellationToken);
+            var loadedPluginContainers = await _pluginLoader.LoadAsync(pluginsToLoad, cancellationToken);
             await _pluginContainerStorage.AddPluginsAsync(loadedPluginContainers, cancellationToken);
 
             _logger.LogInformation("Successfully loaded {Count} plugins", loadedPluginContainers.Count);

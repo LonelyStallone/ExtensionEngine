@@ -1,0 +1,58 @@
+﻿syntax = "proto3";
+ 
+option csharp_namespace = "MizarPluginsFacade.Proto";
+
+import "google/protobuf/timestamp.proto";
+
+package MizarPluginsFacade;
+
+service MizarPluginsFacade {
+    rpc ProduceApiEnvelopMessages(ProduceApiEnvelopMessagesRequest) returns (ProduceApiEnvelopMessagesResponse);
+    rpc SendApiEnvelopMessagesAsync<TEntry>(SendApiEnvelopMessagesRequest) returns (SendApiEnvelopMessagesResponse);
+    rpc ConsumeApiEnvelopMessage(ConsumeApiEnvelopMessageRequest) returns (ConsumeApiEnvelopMessageResponse);
+    rpc AckConsumedMessages(AckConsumedMessagesRequest) returns (AckConsumedMessagesResponse);
+}
+ 
+message ProduceApiEnvelopMessagesRequest{
+    repeated ApiEnvelopMessage message = 1;
+}
+
+message ProduceApiEnvelopMessagesResponse{
+}
+
+message SendApiEnvelopMessagesRequest{
+    ApiEnvelopMessage message = 1;
+}
+
+message SendApiEnvelopMessagesResponse{
+}
+
+message ConsumeApiEnvelopMessageRequest{
+    PluginInfo plugin_info = 1;
+}
+
+message ConsumeApiEnvelopMessageResponse{
+     repeated ApiEnvelopMessage message = 1;
+}
+
+message AckConsumedMessagesRequest{
+    repeated string message_id = 1;
+}
+
+message AckConsumedMessagesResponse{
+}
+
+message ApiEnvelopeRequest {
+  required string host_id = 1;
+  required PluginInfo plugin_info = 2;
+  required string message_id = 3;
+  required string trace_id = 4;
+  required google.protobuf.Timestamp created_at = 5;
+  required string payload_type  = 6;
+  required string payload  = 7;
+}
+
+message PluginInfo {
+	string version = 1;
+	string name = 2;
+}

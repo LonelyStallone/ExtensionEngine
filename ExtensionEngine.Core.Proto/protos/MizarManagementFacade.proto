@@ -1,10 +1,10 @@
 ﻿syntax = "proto3";
  
-option csharp_namespace = "ExtensionEngine.Core.Proto";
+option csharp_namespace = "MizarManagementFacade.Proto";
 
-package ExtensionEngine;
+package MizarManagementFacade;
 
-service ExtensionEngineFacade {
+service MizarManagementFacade {
   rpc GetValidPluginVersions (GetValidPluginVersionsRequest) returns (GetValidPluginVersionsResponse);
   rpc SetValidPluginVersions (SetValidPluginVersionsRequest) returns (SetValidPluginVersionsResponse);
   rpc LoadPlugins (LoadPluginsRequest) returns (LoadPluginsResponse);
@@ -15,31 +15,31 @@ message GetValidPluginVersionsRequest {
 }
  
 message GetValidPluginVersionsResponse {
-  repeated PluginMetadata metadata = 1;
+  repeated PluginInfo plugin_info = 1;
 }
 
 message SetValidPluginVersionsRequest {
   string host_id = 1;
-  PluginMetadata plugin_metadata = 2;
+  PluginInfo plugin_info = 2;
 }
 
 message SetValidPluginVersionsResponse {
 }
 
 message LoadPluginsRequest {
-  repeated PluginMetadata metadata = 1;
+  repeated PluginInfo plugin_info = 1;
 }
  
 message LoadPluginsResponse {
   repeated PluginContainer container = 1;
 }
 
-message PluginMetadata {
-	string version = 1;
-	string name = 2;
-}
-
 message PluginContainer {
 	string data = 1;
-	PluginMetadata metadata = 2;
+	PluginInfo plugin_info = 2;
+}
+
+message PluginInfo {
+	string version = 1;
+	string name = 2;
 }

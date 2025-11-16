@@ -1,5 +1,6 @@
 ﻿using ExtensionEngine.Core.Proto;
 using Grpc.Core;
+using MizarManagementFacade.Proto;
 
 namespace ExtensionEngine.Gateway;
 

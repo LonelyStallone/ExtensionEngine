@@ -107,7 +107,7 @@ public class PluginZipExtractor
         }
         catch
         {
-            _logger.LogWarning()
+            _logger.LogWarning("Create folder error: {path}", path);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using ExtensionEngine.Abstractions.Plugin;
+using ExtensionEngine.Abstractions.Plugin.Models;
 using ExtensionEngine.Core.Management.Abstractions;
 using ExtensionEngine.Core.Proto;
-using ExtensionEngine.Plugin.Abstractions.Gateway;
 using Grpc.Net.Client;
+using MizarManagementFacade.Proto;
 
 namespace ExtensionEngine.Core.Management;
 
@@ -33,7 +34,7 @@ public class GrpcPluginLoader : IPluginLoader
         }
 
         var url = _pluginEndpointResolver.GetGatewayEndpoint();
-        using var channel = GrpcChannel.ForAddress(url);
+        using var channel = GrpcChannel.ForAddress("http://localhost:5002");
 
         var client = new ExtensionEngineFacade.ExtensionEngineFacadeClient(channel);
         var response = await client.LoadPluginsAsync(request, cancellationToken: cancellationToken);
@@ -72,7 +73,7 @@ public class GrpcPluginLoader : IPluginLoader
             var version = metadataProto.Version;
 
 
-            metadatas.Add(new Plugin.Abstractions.Models.PluginInfo(name, version));
+            metadatas.Add(new PluginInfo(name, version));
         }
 
         return metadatas.AsReadOnly();

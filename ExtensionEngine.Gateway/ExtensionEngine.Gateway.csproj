@@ -19,13 +19,4 @@
     <Folder Include="Resources\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Resources\ExtensionEngine.Plugin.InventoryManagement.MacOs_v1.0.0.plugin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ExtensionEngine.Plugin.InventoryManagement.MacOs_v1.0.1.plugin">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
