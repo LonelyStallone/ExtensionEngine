@@ -2,7 +2,8 @@
 using ExtensionEngine.Plugin.Abstractions.Extensions;
 using ExtensionEngine.Core.Plugins.Abstractions;
 using ExtensionEngine.Core.Storage.Abstractions;
-using ExtensionEngine.Abstractions.Plugin;
+using ExtensionEngine.Abstractions.Plugins;
+using System.Threading;
 
 namespace ExtensionEngine.Core.Plugins;
 
@@ -13,13 +14,16 @@ public class HostedPlugin : IHostedPlugin
     private IPluginInfo _actualPluginVersion;
     private IPlugin _plugin;
 
+
+
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<HostedPlugin> _logger;
     private readonly IPluginContainerStorage _pluginContainerStorage;
     private readonly IPluginExtractor _pluginExtractor;
     private readonly IPluginAssemblyLoader _pluginAssemblyLoader;
 
-    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private CancellationTokenSource _cancellationTokenSource = new();
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     private Task? _backgroundTask;
 
@@ -51,18 +55,25 @@ public class HostedPlugin : IHostedPlugin
         _actualPluginVersion = pluginInfo;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        if (_backgroundTask != null)
+        try
         {
-            _logger.LogWarning("HostedPlugin {PluginName} is already started", Name);
-            return Task.CompletedTask;
+            _cancellationTokenSource = new();
+            await _semaphore.WaitAsync(cancellationToken);
+
+            if (_backgroundTask != null)
+            {
+                _logger.LogWarning("HostedPlugin {PluginName} is already started", Name);
+            }
+
+            _logger.LogInformation("Starting HostedPlugin {PluginName}", Name);
+            _backgroundTask = RunAsync();
         }
-
-        _logger.LogInformation("Starting HostedPlugin {PluginName}", Name);
-        _backgroundTask = RunAsync();
-
-        return Task.CompletedTask;
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
@@ -128,12 +139,18 @@ public class HostedPlugin : IHostedPlugin
             return false;
         }
 
-        if (!actualPluginVersion.Version.Equals(plugin.Version, StringComparison.OrdinalIgnoreCase))
+        if (plugin is null)
+        {
+            _logger.LogDebug("NeedStartPlugin: returning true - actual plugin is null");
+            return true;
+        }
+
+        if (!actualPluginVersion.Version.Equals(plugin.Info.Version, StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogDebug(
                 "NeedStartPlugin: returning true - plugin version changed from {CurrentVersion} to {NewVersion}",
                 actualPluginVersion.Version,
-                plugin?.Version ?? "Undefined");
+                plugin?.Info.Version ?? "Undefined");
 
             return true;
         }
@@ -146,9 +163,12 @@ public class HostedPlugin : IHostedPlugin
     {
         if (plugin is not null)
         {
+            // TODO: fix token from host
+            _cancellationTokenSource.Cancel();
+
             _logger.LogInformation("Stopping previous version of plugin {PluginName}", Name);
 
-            await plugin.StopAsync(_cancellationTokenSource.Token);
+            await plugin.StopAsync(cancellationToken);
 
             _logger.LogInformation("Plugin {PluginName} version {Version} stopped successfully", Name, Version);
         }

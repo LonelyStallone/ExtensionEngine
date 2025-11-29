@@ -1,8 +1,6 @@
-﻿using ExtensionEngine.Abstractions.Plugins;
+﻿namespace ExtensionEngine.Abstractions.Gateway;
 
-namespace ExtensionEngine.Abstractions.Gateway;
-
-public interface IGateway
+public interface IPluginGateway
 {
     Task PublishAsync<TMessageRequest>(TMessageRequest messageRequest, CancellationToken cancellationToken)
         where TMessageRequest : IMessageRequest;

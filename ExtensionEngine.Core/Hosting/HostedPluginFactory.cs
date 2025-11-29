@@ -2,7 +2,7 @@
 using ExtensionEngine.Core.Plugins.Abstractions;
 using Microsoft.Extensions.Logging;
 using ExtensionEngine.Core.Storage.Abstractions;
-using ExtensionEngine.Abstractions.Plugin;
+using ExtensionEngine.Abstractions.Plugins;
 
 namespace ExtensionEngine.Core.Plugins;
 

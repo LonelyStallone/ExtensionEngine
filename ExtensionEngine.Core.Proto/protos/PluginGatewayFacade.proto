@@ -1,12 +1,12 @@
 ﻿syntax = "proto3";
  
-option csharp_namespace = "MizarPlugins.Proto";
+option csharp_namespace = "PluginGateway.Proto";
 
 import "google/protobuf/timestamp.proto";
 
-package MizarPlugins;
+package PluginGatewayPackage;
 
-service MizarPluginsFacade {
+service PluginGatewayFacade {
     rpc Publish(PublishRequest) returns (PublishResponse);
     rpc Send(SendRequest) returns (SendResponse);
     rpc Consume(ConsumeRequest) returns (ConsumeResponse);

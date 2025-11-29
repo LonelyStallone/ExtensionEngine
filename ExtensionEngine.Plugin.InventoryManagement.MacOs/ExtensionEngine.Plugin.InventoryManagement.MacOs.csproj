@@ -6,8 +6,8 @@
     <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
     <SelfContained>false</SelfContained>
     <EnableDynamicLoading>true</EnableDynamicLoading>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtensionEngine.Core.Proto\ExtensionEngine.Core.Proto.csproj" />
-    <ProjectReference Include="..\ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Abstractions.csproj" />
+    <ProjectReference Include="..\ExtensionEngine.Plugin\ExtensionEngine.Plugin.csproj" />
   </ItemGroup>
 
 </Project>

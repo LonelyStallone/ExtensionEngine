@@ -1,19 +1,19 @@
 ﻿using ExtensionEngine.Abstractions.Utils;
 using Grpc.Core;
 using MediatR;
-using MizarPlugins.Proto;
+using PluginGateway.Proto;
 
 namespace ExtensionEngine.Gateway;
 
-public class MizarPluginsService : MizarPluginsFacade.MizarPluginsFacadeBase
+public class PluginGatewayService : PluginGatewayFacade.PluginGatewayFacadeBase
 {
-    private readonly ILogger<MizarPluginsService> _logger;
+    private readonly ILogger<PluginGatewayService> _logger;
 
     private readonly IMediator _mediator;
 
-    public MizarPluginsService(
+    public PluginGatewayService(
         IMediator mediator,
-        ILogger<MizarPluginsService> logger)
+        ILogger<PluginGatewayService> logger)
     {
         _mediator = mediator;
         _logger = logger;

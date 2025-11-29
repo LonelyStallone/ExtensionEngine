@@ -6,5 +6,9 @@
   {
     "name": "ExtensionEngine.Plugin.InventoryManagement.MacOs",
     "version": "1.0.1"
+  },
+  {
+    "name": "ExtensionEngine.Plugin.InventoryManagement.MacOs",
+    "version": "1.0.2"
   }
 ]

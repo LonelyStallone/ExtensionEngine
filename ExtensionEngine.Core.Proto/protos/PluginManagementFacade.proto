@@ -1,10 +1,10 @@
 ﻿syntax = "proto3";
  
-option csharp_namespace = "MizarManagement.Proto";
+option csharp_namespace = "PluginManagement.Proto";
 
-package MizarManagement;
+package PluginManagementFacadePackage;
 
-service MizarManagementFacade {
+service PluginManagementFacade {
   rpc GetValidPluginVersions (GetValidPluginVersionsRequest) returns (GetValidPluginVersionsResponse);
   rpc SetValidPluginVersions (SetValidPluginVersionsRequest) returns (SetValidPluginVersionsResponse);
   rpc LoadPlugins (LoadPluginsRequest) returns (LoadPluginsResponse);
@@ -15,7 +15,7 @@ message GetValidPluginVersionsRequest {
 }
  
 message GetValidPluginVersionsResponse {
-	PluginInfo plugin_info = 1;
+	repeated PluginInfo plugin_info = 1;
 }
 
 message SetValidPluginVersionsRequest {
@@ -27,11 +27,11 @@ message SetValidPluginVersionsResponse {
 }
 
 message LoadPluginsRequest {
-	PluginInfo plugin_info = 1;
+	repeated PluginInfo plugin_info = 1;
 }
  
 message LoadPluginsResponse {
-	PluginContainer container = 1;
+	repeated PluginContainer container = 1;
 }
 
 message PluginContainer {

@@ -1,4 +1,4 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
+﻿using ExtensionEngine.Abstractions.Plugins;
 using System.Reflection;
 
 namespace ExtensionEngine.Plugin.Delivery;
@@ -36,8 +36,8 @@ public class PluginPackage
         if (pluginInstance is null)
             throw new InvalidOperationException("Плагин не собрался");
 
-        package.PluginName = pluginInstance.Name ?? Path.GetFileNameWithoutExtension(mainAssemblyName);
-        package.Version = pluginInstance.Version.ToString();
+        package.PluginName = pluginInstance.Info.Name ?? Path.GetFileNameWithoutExtension(mainAssemblyName);
+        package.Version = pluginInstance.Info.Version.ToString();
         package.MainAssembly = mainAssemblyName;
         package.EntryType = pluginType.FullName;
 

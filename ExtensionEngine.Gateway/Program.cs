@@ -6,7 +6,7 @@ builder.Services.AddGrpc();
 
 var app = builder.Build();
 
-app.MapGrpcService<MizarManagementService>();
-app.MapGrpcService<MizarPluginsService>();
+app.MapGrpcService<PluginManagementService>();
+app.MapGrpcService<PluginGatewayService>();
 
 app.Run();

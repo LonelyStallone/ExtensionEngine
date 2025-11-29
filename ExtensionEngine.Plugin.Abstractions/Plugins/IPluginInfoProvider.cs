@@ -2,5 +2,5 @@
 
 public interface IPluginInfoProvider
 {
-    IPluginInfo PluginInfo { get; }
+    IPluginInfo Info { get; }
 }

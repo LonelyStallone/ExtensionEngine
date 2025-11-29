@@ -1,4 +1,4 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
+﻿using ExtensionEngine.Abstractions.Plugins;
 using ExtensionEngine.Core.Hosting.Abstractions;
 using ExtensionEngine.Core.Management.Abstractions;
 using ExtensionEngine.Core.Storage.Abstractions;
@@ -94,7 +94,6 @@ public class PluginManager : IPluginManager
     {
         foreach (var pluginMetadata in pluginMetadatasToUpdate)
         {
-            _logger.LogInformation("Runing plugin {Plugin} from local storage", pluginMetadata.GetDescription());
             await _runtimePluginTracker.AddOrUpdateAsync(pluginMetadata, cancellationToken);
         }
     }

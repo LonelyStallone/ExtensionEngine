@@ -6,6 +6,12 @@ namespace ExtensionEngine.Core.Gateway;
 
 public class EnvelopeGateway : IEnvelopeGateway
 {
+    public EnvelopeGateway()
+    {
+        
+    }
+
+
     public Task AcksAsync(IPluginInfo pluginInfo, EnvelopMessage messages, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

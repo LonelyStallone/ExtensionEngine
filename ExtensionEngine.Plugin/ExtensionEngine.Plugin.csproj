@@ -6,7 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+    <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+    <PackageReference Include="MediatR" Version="13.1.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+  
   <ItemGroup>
+    <ProjectReference Include="..\ExtensionEngine.Core.Proto\ExtensionEngine.Core.Proto.csproj" />
     <ProjectReference Include="..\ExtensionEngine.Plugin.Abstractions\ExtensionEngine.Abstractions.csproj" />
   </ItemGroup>
 

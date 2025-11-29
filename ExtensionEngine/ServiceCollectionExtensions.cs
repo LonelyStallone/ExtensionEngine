@@ -3,6 +3,8 @@ using ExtensionEngine.Core.Gateway;
 using ExtensionEngine.Core.Hosting.Abstractions;
 using ExtensionEngine.Core.Management;
 using ExtensionEngine.Core.Management.Abstractions;
+using ExtensionEngine.Core.Plugins;
+using ExtensionEngine.Core.Plugins.Abstractions;
 using ExtensionEngine.Core.Storage;
 using ExtensionEngine.Core.Storage.Abstractions;
 
@@ -14,9 +16,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IPluginManager, PluginManager>();
 
-        services.AddScoped<IEnvelopeGateway, EnvelopeGateway>();
+        services.AddSingleton<IEnvelopeGateway, EnvelopeGateway>();
 
         services.AddSingleton<IHostedPluginStorage, HostedPluginStorage>();
+        services.AddSingleton<IHostedPluginFactory, HostedPluginFactory>();
 
         services.AddSingleton<IPluginLoader, GrpcPluginLoader>();
         services.AddSingleton<IPluginContainerStorage, PluginContainerStorage>();

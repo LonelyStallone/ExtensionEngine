@@ -1,4 +1,4 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
+﻿using ExtensionEngine.Abstractions.Plugins;
 using Microsoft.Extensions.Hosting;
 
 namespace ExtensionEngine.Core.Plugins.Abstractions;

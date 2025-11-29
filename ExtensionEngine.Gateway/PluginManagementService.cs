@@ -1,14 +1,14 @@
 ﻿using Grpc.Core;
-using MizarManagement.Proto;
+using PluginManagement.Proto;
 
 namespace ExtensionEngine.Gateway;
 
-public class MizarManagementService : MizarManagementFacade.MizarManagementFacadeBase
+public class PluginManagementService : PluginManagementFacade.PluginManagementFacadeBase
 {
-    private readonly ILogger<MizarManagementService> _logger;
+    private readonly ILogger<PluginManagementService> _logger;
     private static Dictionary<string, List<PluginInfo>> ValidPluginVersions = new();
 
-    public MizarManagementService(ILogger<MizarManagementService> logger)
+    public PluginManagementService(ILogger<PluginManagementService> logger)
     {
         _logger = logger;
     }

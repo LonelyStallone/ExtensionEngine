@@ -1,4 +1,4 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
+﻿using ExtensionEngine.Abstractions.Plugins;
 using ExtensionEngine.Core.Storage.Abstractions;
 using System.Reflection;
 using System.Runtime.Loader;
