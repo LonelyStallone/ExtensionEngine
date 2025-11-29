@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ExtensionEngine.Abstractions.Plugins;
+using ExtensionEngine.Core.Storage.Abstractions;
+using Microsoft.Extensions.Logging;
 using System.IO.Compression;
 
 namespace ExtensionEngine.Core.Storage;
 
-public class PluginZipExtractor
+public class PluginZipExtractor : IPluginExtractor
 {
     private readonly string _tempExtractPath = "TempExtracted";
 
@@ -14,8 +16,11 @@ public class PluginZipExtractor
         _logger = logger;
     }
 
-    public string ExtractPluginFromZip(byte[] zipData, string pluginName)
+    public string ExtractPluginFromZip(IPluginContainer pluginContainer)
     {
+        var zipData = pluginContainer.Data;
+        var pluginName = pluginContainer.Name;
+
         CreateDirectoryIfNotExist(_tempExtractPath);
 
         // Создаем временную директорию для распаковки

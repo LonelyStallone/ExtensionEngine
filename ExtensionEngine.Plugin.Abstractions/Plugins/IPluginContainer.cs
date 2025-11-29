@@ -1,4 +1,4 @@
-﻿namespace ExtensionEngine.Abstractions.Plugin;
+﻿namespace ExtensionEngine.Abstractions.Plugins;
 
 public interface IPluginContainer : IPluginInfo
 {

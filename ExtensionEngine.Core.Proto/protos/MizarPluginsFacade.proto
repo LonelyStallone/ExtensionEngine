@@ -1,55 +1,69 @@
 ﻿syntax = "proto3";
  
-option csharp_namespace = "MizarPluginsFacade.Proto";
+option csharp_namespace = "MizarPlugins.Proto";
 
 import "google/protobuf/timestamp.proto";
 
-package MizarPluginsFacade;
+package MizarPlugins;
 
 service MizarPluginsFacade {
-    rpc ProduceApiEnvelopMessages(ProduceApiEnvelopMessagesRequest) returns (ProduceApiEnvelopMessagesResponse);
-    rpc SendApiEnvelopMessagesAsync<TEntry>(SendApiEnvelopMessagesRequest) returns (SendApiEnvelopMessagesResponse);
-    rpc ConsumeApiEnvelopMessage(ConsumeApiEnvelopMessageRequest) returns (ConsumeApiEnvelopMessageResponse);
-    rpc AckConsumedMessages(AckConsumedMessagesRequest) returns (AckConsumedMessagesResponse);
+    rpc Publish(PublishRequest) returns (PublishResponse);
+    rpc Send(SendRequest) returns (SendResponse);
+    rpc Consume(ConsumeRequest) returns (ConsumeResponse);
+    rpc Ack(AckRequest) returns (AckResponse);
 }
  
-message ProduceApiEnvelopMessagesRequest{
-    repeated ApiEnvelopMessage message = 1;
+message PublishRequest {
+    HostInfo host_info = 1;
+    PluginInfo plugin_info = 2;
+    repeated EnvelopeMessage messages = 3;
 }
 
-message ProduceApiEnvelopMessagesResponse{
+message PublishResponse {
+    repeated EnvelopeMessage messages = 1;
 }
 
-message SendApiEnvelopMessagesRequest{
-    ApiEnvelopMessage message = 1;
+message SendRequest {
+    HostInfo host_info = 1;
+    PluginInfo plugin_info = 2;
+    EnvelopeMessage messages = 3;
 }
 
-message SendApiEnvelopMessagesResponse{
+message SendResponse{
+    EnvelopeMessage messages = 3;
 }
 
-message ConsumeApiEnvelopMessageRequest{
-    PluginInfo plugin_info = 1;
+message ConsumeRequest{
+    HostInfo host_info = 1;
+    PluginInfo plugin_info = 2;
+    repeated EnvelopeMessage messages = 3;
 }
 
-message ConsumeApiEnvelopMessageResponse{
-     repeated ApiEnvelopMessage message = 1;
+message ConsumeResponse{
+    repeated EnvelopeMessage messages = 3;
 }
 
-message AckConsumedMessagesRequest{
-    repeated string message_id = 1;
+message AckRequest{
+    HostInfo host_info = 1;
+    PluginInfo plugin_info = 2;
+    repeated EnvelopeMessage messages = 3;
 }
 
-message AckConsumedMessagesResponse{
+message AckResponse{
+    repeated EnvelopeMessage messages = 1;
 }
 
-message ApiEnvelopeRequest {
-  required string host_id = 1;
-  required PluginInfo plugin_info = 2;
-  required string message_id = 3;
-  required string trace_id = 4;
-  required google.protobuf.Timestamp created_at = 5;
-  required string payload_type  = 6;
-  required string payload  = 7;
+message EnvelopeMessage {
+    Payload payload = 1;
+}
+
+message Payload {
+  string payload_type  = 1;
+  string data = 2;
+}
+
+message HostInfo {
+    string name = 1;
 }
 
 message PluginInfo {

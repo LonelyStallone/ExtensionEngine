@@ -20,8 +20,15 @@ public class HostedPluginFactory : IHostedPluginFactory
         var serviceProvider = _serviceProvider;
         var logger = _serviceProvider.GetRequiredService<ILogger<HostedPlugin>>();
         var pluginContainerStorage = _serviceProvider.GetRequiredService<IPluginContainerStorage>();
-        var pluginFactory = _serviceProvider.GetRequiredService<IPluginFactory>();
+        var pluginExtractor = _serviceProvider.GetRequiredService<IPluginExtractor>();
+        var pluginAssemblyLoader = _serviceProvider.GetRequiredService<IPluginAssemblyLoader>();
 
-        return new HostedPlugin(pluginInfo, serviceProvider, logger, pluginContainerStorage, pluginFactory);
+        return new HostedPlugin(
+            pluginInfo,
+            serviceProvider,
+            logger,
+            pluginContainerStorage,
+            pluginExtractor,
+            pluginAssemblyLoader);
     }
 }

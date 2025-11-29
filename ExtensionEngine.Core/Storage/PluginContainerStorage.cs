@@ -1,5 +1,5 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
-using ExtensionEngine.Abstractions.Plugin.Models;
+﻿using ExtensionEngine.Abstractions.Plugins;
+using ExtensionEngine.Abstractions.Plugins.Models;
 using ExtensionEngine.Core.Storage.Abstractions;
 using System.Text.Json;
 

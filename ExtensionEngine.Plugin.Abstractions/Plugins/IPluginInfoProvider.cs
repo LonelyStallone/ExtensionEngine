@@ -1,8 +1,6 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
-
-namespace ExtensionEngine.Abstractions.Plugins;
+﻿namespace ExtensionEngine.Abstractions.Plugins;
 
 public interface IPluginInfoProvider
 {
-    IPluginInfo GetPluginInfo();
+    IPluginInfo PluginInfo { get; }
 }

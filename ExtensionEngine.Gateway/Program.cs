@@ -6,7 +6,7 @@ builder.Services.AddGrpc();
 
 var app = builder.Build();
 
-app.MapGrpcService<ExtensionEngineFacadeService>();
-app.MapGrpcService<InventoryPluginFacadeService>();
+app.MapGrpcService<MizarManagementService>();
+app.MapGrpcService<MizarPluginsService>();
 
 app.Run();

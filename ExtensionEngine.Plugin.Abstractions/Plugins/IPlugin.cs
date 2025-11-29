@@ -1,6 +1,6 @@
-﻿namespace ExtensionEngine.Abstractions.Plugin;
+﻿namespace ExtensionEngine.Abstractions.Plugins;
 
-public interface IPlugin : IPluginInfo
+public interface IPlugin : IPluginInfoProvider
 {
     Task StartAsync(IServiceProvider hostServiceProvider, CancellationToken cancellationToken);
 

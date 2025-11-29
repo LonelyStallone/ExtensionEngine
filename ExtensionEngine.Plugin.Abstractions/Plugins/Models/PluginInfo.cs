@@ -1,6 +1,4 @@
-﻿using ExtensionEngine.Abstractions.Plugin;
-
-namespace ExtensionEngine.Abstractions.Plugin.Models;
+﻿namespace ExtensionEngine.Abstractions.Plugins.Models;
 
 public class PluginInfo : IPluginInfo
 {

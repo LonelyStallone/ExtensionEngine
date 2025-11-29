@@ -1,5 +1,5 @@
 ﻿using ExtensionEngine.Abstractions.Gateway;
-using ExtensionEngine.Abstractions.Plugin;
+using ExtensionEngine.Abstractions.Plugins;
 using ExtensionEngine.Plugin.InventoryManagement.MacOs.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,9 +11,16 @@ namespace ExtensionEngine.Plugin.InventoryManagement.MacOs;
 
 public class TestInventoryPlugin : IPlugin
 {
+    public TestInventoryPlugin()
+    {
+        
+    }
+
     public string Version => typeof(TestInventoryPlugin).Assembly!.GetName().Version.ToString(3);
 
     public string Name => typeof(TestInventoryPlugin).Assembly!.GetName().Name;
+
+    public IPluginInfo PluginInfo => throw new NotImplementedException();
 
     private Task _task = Task.CompletedTask;
     private CancellationTokenSource _source = new();
@@ -30,7 +37,7 @@ public class TestInventoryPlugin : IPlugin
         using var scope = hostServiceProvider.CreateScope();
         var scopedServiceProvider = scope.ServiceProvider;
 
-        var gateway = scopedServiceProvider.GetRequiredService<IMizarGateway>();
+        var gateway = scopedServiceProvider.GetRequiredService<IGateway>();
         var loggerFactory = scopedServiceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger<TestInventoryPlugin>();
         logger.LogInformation("{Name}", Name);
@@ -43,8 +50,7 @@ public class TestInventoryPlugin : IPlugin
 
             while (!token.IsCancellationRequested)
             {
-
-                await gateway.ProduceMessagesAsync([request], CancellationToken.None);
+                await gateway.PublishAsync(request, CancellationToken.None);
                 logger.LogInformation("{Name}. INVENTORY PLUGIN. SUCCESS!", Name);
 
                 await Task.Delay(2000, CancellationToken.None);
@@ -56,7 +62,7 @@ public class TestInventoryPlugin : IPlugin
         }
     }
 
-    private UpdateInventoryMessage CreateProduceInventoryDataRequest()
+    private UpdateInventoryEvent CreateProduceInventoryDataRequest()
     {
         var inventoryDataPluginVersion = new InventoryData
         {
@@ -78,7 +84,7 @@ public class TestInventoryPlugin : IPlugin
 
         var inventoryData = new[] { inventoryDataPluginVersion, inventoryDataPluginName, inventoryDataMachineName };
 
-        var request = new UpdateInventoryMessage
+        var request = new UpdateInventoryEvent
         {
             InventoryData = inventoryData
         };

@@ -3,7 +3,7 @@ using ExtensionEngine.Core.Storage.Abstractions;
 using System.Reflection;
 using System.Runtime.Loader;
 
-public class PluginAssemblyLoader : IPluginFactory
+public class PluginAssemblyLoader : IPluginAssemblyLoader
 {
     public IPlugin LoadPluginFromAssembly(string assemblyPath)
     {

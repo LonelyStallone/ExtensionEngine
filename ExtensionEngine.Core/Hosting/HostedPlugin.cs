@@ -16,7 +16,9 @@ public class HostedPlugin : IHostedPlugin
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<HostedPlugin> _logger;
     private readonly IPluginContainerStorage _pluginContainerStorage;
-    private readonly IPluginFactory _pluginFactory;
+    private readonly IPluginExtractor _pluginExtractor;
+    private readonly IPluginAssemblyLoader _pluginAssemblyLoader;
+
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     private Task? _backgroundTask;
@@ -26,14 +28,16 @@ public class HostedPlugin : IHostedPlugin
         IServiceProvider serviceProvider,
         ILogger<HostedPlugin> logger,
         IPluginContainerStorage pluginContainerStorage,
-        IPluginFactory pluginFactory)
+        IPluginExtractor pluginExtractor,
+        IPluginAssemblyLoader pluginAssemblyLoader)
     {
         _actualPluginVersion = actualPluginVersion;
 
         _serviceProvider = serviceProvider;
         _logger = logger;
         _pluginContainerStorage = pluginContainerStorage;
-        _pluginFactory = pluginFactory;
+        _pluginExtractor = pluginExtractor;
+        _pluginAssemblyLoader = pluginAssemblyLoader;
     }
 
     public string Version => _actualPluginVersion.Version;
@@ -157,10 +161,13 @@ public class HostedPlugin : IHostedPlugin
     private async Task<IPlugin> GetActualPluginAsync(IPluginInfo pluginInfo, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Loading plugin container {Plugin} from local storage", pluginInfo.GetDescription());
-        var pluginContainers = await _pluginContainerStorage.GetPluginContainerAsync(pluginInfo, cancellationToken);
+        var pluginContainer = await _pluginContainerStorage.GetPluginContainerAsync(pluginInfo, cancellationToken);
 
-        _logger.LogInformation("Convert container {Plugin} to .NET plugin", pluginInfo.GetDescription());
-        var plugin = _pluginFactory.Create(pluginContainers);
+        _logger.LogInformation("Extract container to folder {Plugin}", pluginInfo.GetDescription());
+        var assrmblyPath = _pluginExtractor.ExtractPluginFromZip(pluginContainer);
+
+        _logger.LogInformation("Load plugin from assembly {Plugin}", pluginInfo.GetDescription());
+        var plugin = _pluginAssemblyLoader.LoadPluginFromAssembly(assrmblyPath);
 
         return plugin;
     }

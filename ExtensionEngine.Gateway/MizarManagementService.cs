@@ -1,16 +1,14 @@
-﻿using ExtensionEngine.Core.Proto;
-using Grpc.Core;
-using MizarManagementFacade.Proto;
+﻿using Grpc.Core;
+using MizarManagement.Proto;
 
 namespace ExtensionEngine.Gateway;
 
-public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngineFacadeBase
+public class MizarManagementService : MizarManagementFacade.MizarManagementFacadeBase
 {
-    private readonly ILogger<ExtensionEngineFacadeService> _logger;
-    private static Dictionary<string, List<PluginMetadata>> ValidPluginVersions = new();
+    private readonly ILogger<MizarManagementService> _logger;
+    private static Dictionary<string, List<PluginInfo>> ValidPluginVersions = new();
 
-
-    public ExtensionEngineFacadeService(ILogger<ExtensionEngineFacadeService> logger)
+    public MizarManagementService(ILogger<MizarManagementService> logger)
     {
         _logger = logger;
     }
@@ -27,7 +25,7 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
         if (ValidPluginVersions.TryGetValue(request.HostId, out var pluginMetadata))
         {
             var response = new GetValidPluginVersionsResponse();
-            response.Metadata.AddRange(pluginMetadata);
+            response.PluginInfo.AddRange(pluginMetadata);
             return response;
         }
 
@@ -44,7 +42,7 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Host ID is required"));
         }
 
-        if (request.PluginMetadata == null)
+        if (request.PluginInfo == null)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Plugin metadata is required"));
         }
@@ -52,26 +50,26 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
         // Добавляем или обновляем метаданные плагина для указанного host_id
         if (!ValidPluginVersions.ContainsKey(request.HostId))
         {
-            ValidPluginVersions[request.HostId] = new List<PluginMetadata>();
+            ValidPluginVersions[request.HostId] = new List<PluginInfo>();
         }
 
         // Проверяем, существует ли уже плагин с таким именем
         var existingPluginIndex = ValidPluginVersions[request.HostId]
-            .FindIndex(p => p.Name == request.PluginMetadata.Name);
+            .FindIndex(p => p.Name == request.PluginInfo.Name);
 
         if (existingPluginIndex >= 0)
         {
             // Обновляем существующий плагин
-            ValidPluginVersions[request.HostId][existingPluginIndex] = request.PluginMetadata;
+            ValidPluginVersions[request.HostId][existingPluginIndex] = request.PluginInfo;
             _logger.LogInformation("Updated plugin {PluginName} for host {HostId}",
-                request.PluginMetadata.Name, request.HostId);
+                request.PluginInfo.Name, request.HostId);
         }
         else
         {
             // Добавляем новый плагин
-            ValidPluginVersions[request.HostId].Add(request.PluginMetadata);
+            ValidPluginVersions[request.HostId].Add(request.PluginInfo);
             _logger.LogInformation("Added new plugin {PluginName} for host {HostId}",
-                request.PluginMetadata.Name, request.HostId);
+                request.PluginInfo.Name, request.HostId);
         }
 
         return new SetValidPluginVersionsResponse();
@@ -83,7 +81,7 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
     {
         var containers = new List<PluginContainer>();
 
-        foreach (var metadata in request.Metadata)
+        foreach (var metadata in request.PluginInfo)
         {
             var path = GetPluginPath(metadata);
 
@@ -92,7 +90,7 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
             var container = new PluginContainer
             {
                 Data = Convert.ToBase64String(data),
-                Metadata = metadata
+                PluginInfo = metadata
             };
 
             containers.Add(container);
@@ -104,7 +102,7 @@ public class ExtensionEngineFacadeService : ExtensionEngineFacade.ExtensionEngin
         };
     }
 
-    private string GetPluginPath(PluginMetadata pluginMetadata)
+    private string GetPluginPath(PluginInfo pluginMetadata)
     {
         return $"Resources/{pluginMetadata.Name}_v{pluginMetadata.Version}.plugin";
     }
